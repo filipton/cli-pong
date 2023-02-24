@@ -16,7 +16,11 @@ impl Drop for CleanUp {
 impl CleanUp {
     pub fn new() -> Result<Self> {
         terminal::enable_raw_mode()?;
-        execute!(std::io::stdout(), terminal::EnterAlternateScreen)?;
+        execute!(
+            std::io::stdout(),
+            terminal::EnterAlternateScreen,
+            terminal::Clear(terminal::ClearType::All)
+        )?;
 
         return Ok(CleanUp);
     }
@@ -39,4 +43,8 @@ pub fn clear_console() {
         terminal::Clear(terminal::ClearType::All)
     )
     .expect("Error");
+}
+
+pub fn move_zero() {
+    execute!(std::io::stdout(), crossterm::cursor::MoveTo(0, 0),).expect("Error");
 }

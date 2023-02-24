@@ -2,7 +2,7 @@ use std::time::Duration;
 
 use anyhow::Result;
 use crossterm::event::KeyCode;
-use display::{catch_input, clear_console, CleanUp};
+use display::{catch_input, clear_console, CleanUp, move_zero};
 use game::GameData;
 
 mod display;
@@ -12,9 +12,12 @@ fn main() -> Result<()> {
     let _clean_up = CleanUp::new()?;
     let mut game: GameData = GameData::new();
 
-    for i in 0..100 {
+    for i in 0..1000 {
+        move_zero();
+        game.update();
         game.print();
-        std::thread::sleep(Duration::from_millis(100));
+
+        std::thread::sleep(Duration::from_millis(25));
     }
 
     /*
