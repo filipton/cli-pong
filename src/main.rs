@@ -17,7 +17,24 @@ fn main() -> Result<()> {
         game.update();
         game.print();
 
-        std::thread::sleep(Duration::from_millis(16));
+        match catch_input(3)? {
+            KeyCode::Char('q') => {
+                game.state = GameState::Lost;
+            }
+            KeyCode::Char('w') => {
+                game.move_player(1, -1.0);
+            }
+            KeyCode::Char('s') => {
+                game.move_player(1, 1.0);
+            }
+            KeyCode::Up => {
+                game.move_player(2, -1.0);
+            }
+            KeyCode::Down => {
+                game.move_player(2, 1.0);
+            }
+            _ => {}
+        }
     }
 
     /*

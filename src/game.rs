@@ -18,8 +18,9 @@ pub struct GameData {
 pub struct PlayerData {
     pub position: f32,
     pub size: usize,
-    pub range: RangeInclusive<usize>,
     pub score: u32,
+
+    range: RangeInclusive<usize>,
 }
 
 #[derive(PartialEq)]
@@ -70,10 +71,10 @@ impl GameData {
     }
 
     fn draw(&self, x: usize, y: usize) -> char {
-        if x == 0 && self.player1.range.contains(&y) {
+        if x == 1 && self.player1.range.contains(&y) {
             return '#';
         }
-        if x == MAP_LIMIT.0 - 1 && self.player2.range.contains(&y) {
+        if x == MAP_LIMIT.0 - 2 && self.player2.range.contains(&y) {
             return '@';
         }
 
@@ -113,8 +114,8 @@ impl GameData {
     fn calc_bounce(&mut self) {
         let (bx, by) = self.ball;
 
-        if bx <= 1.0 && self.player1.range.contains(&(by as usize))
-            || bx >= (MAP_LIMIT.0 - 2) as f32 && self.player2.range.contains(&(by as usize))
+        if bx <= 2.0 && self.player1.range.contains(&(by as usize))
+            || bx >= (MAP_LIMIT.0 - 3) as f32 && self.player2.range.contains(&(by as usize))
         {
             self.ball_direction.0 = -self.ball_direction.0;
         }
@@ -130,5 +131,22 @@ impl GameData {
         if bx <= 0.0 || bx >= (MAP_LIMIT.0 as f32) {
             self.state = GameState::Lost;
         }
+    }
+
+    pub fn move_player(&mut self, player: usize, direction: f32) {
+        let player = match player {
+            1 => &mut self.player1,
+            2 => &mut self.player2,
+            _ => return,
+        };
+
+        if player.position - (player.size as f32) + direction < 0.0 {
+            return;
+        }
+        if player.position + (player.size as f32) + direction > MAP_LIMIT.1 as f32 {
+            return;
+        }
+
+        player.position += direction;
     }
 }
