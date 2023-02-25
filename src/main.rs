@@ -40,9 +40,9 @@ fn main() -> Result<()> {
 
         /*
         if game.player1.position < game.ball.1 {
-            game.move_player(1, 0.25);
+            game.move_player(1, 1.0);
         } else if game.player1.position > game.ball.1 {
-            game.move_player(1, -0.25);
+            game.move_player(1, -1.0);
         }
         */
 
@@ -52,42 +52,6 @@ fn main() -> Result<()> {
             game.move_player(2, -0.15);
         }
     }
-
-    /*
-    while board.game_running {
-        update_board(&mut board);
-
-        clear_console();
-        print_board(&board);
-
-        match catch_input(100)? {
-            KeyCode::Char('q') => {
-                board.game_running = false;
-            }
-            KeyCode::Char('w') => {
-                if board.player1.palette_pos > 0 {
-                    board.player1.palette_pos -= 1;
-                }
-            }
-            KeyCode::Char('s') => {
-                if board.player1.palette_pos < board.limit.1 - 1 {
-                    board.player1.palette_pos += 1;
-                }
-            }
-            KeyCode::Up => {
-                if board.player2.palette_pos > 0 {
-                    board.player2.palette_pos -= 1;
-                }
-            }
-            KeyCode::Down => {
-                if board.player2.palette_pos < board.limit.1 - 1 {
-                    board.player2.palette_pos += 1;
-                }
-            }
-            _ => {}
-        }
-    }
-    */
 
     Ok(())
 }

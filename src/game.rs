@@ -1,6 +1,6 @@
 use std::{ops::RangeInclusive, time::Instant};
 
-const MAP_LIMIT: (usize, usize) = (80, 40);
+const MAP_LIMIT: (usize, usize) = (100, 50);
 
 pub struct GameData {
     pub state: GameState,
@@ -33,7 +33,7 @@ impl PlayerData {
     pub fn new() -> Self {
         PlayerData {
             position: MAP_LIMIT.1 as f32 / 2.0,
-            size: 3,
+            size: 5,
             range: 0..=0,
             score: 0,
         }
@@ -118,7 +118,7 @@ impl GameData {
         if by <= 0.0 || by >= (MAP_LIMIT.1 as f32) {
             self.ball_direction.1 = -self.ball_direction.1;
         }
-        self.ball_direction.1 = self.ball_direction.1.min(1.5).max(-1.5);
+        self.ball_direction.1 = self.ball_direction.1.min(2.0).max(-2.0);
 
         if by <= 0.0 {
             self.ball.1 = 0.0;
