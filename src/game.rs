@@ -1,6 +1,6 @@
 use std::{ops::RangeInclusive, time::Instant};
 
-const MAP_LIMIT: (usize, usize) = (40, 20);
+const MAP_LIMIT: (usize, usize) = (80, 40);
 
 pub struct GameData {
     pub state: GameState,
@@ -113,21 +113,28 @@ impl GameData {
 
     fn calc_bounce(&mut self) {
         let (bx, by) = self.ball;
-
-        if bx <= 2.0 && self.player1.range.contains(&(by as usize))
-            || bx >= (MAP_LIMIT.0 - 3) as f32 && self.player2.range.contains(&(by as usize))
-        {
-            self.ball_direction.0 = -self.ball_direction.0;
-        }
+        self.calc_pallet_bounce((bx, by));
 
         if by <= 0.0 || by >= (MAP_LIMIT.1 as f32) {
             self.ball_direction.1 = -self.ball_direction.1;
         }
+        self.ball_direction.1 = self.ball_direction.1.min(1.5).max(-1.5);
 
         if by <= 0.0 {
             self.ball.1 = 0.0;
         } else if by >= (MAP_LIMIT.1 as f32) {
             self.ball.1 = MAP_LIMIT.1 as f32;
+        }
+    }
+
+    fn calc_pallet_bounce(&mut self, (bx, by): (f32, f32)) {
+        if bx <= 2.0 && self.player1.range.contains(&(by as usize)) {
+            self.ball_direction.0 = -self.ball_direction.0;
+            self.ball_direction.1 += (by - self.player1.position) / (self.player1.size as f32);
+        }
+        if bx >= (MAP_LIMIT.0 - 3) as f32 && self.player2.range.contains(&(by as usize)) {
+            self.ball_direction.0 = -self.ball_direction.0;
+            self.ball_direction.1 += (by - self.player2.position) / (self.player2.size as f32);
         }
     }
 

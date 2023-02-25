@@ -38,16 +38,18 @@ fn main() -> Result<()> {
             _ => {}
         }
 
+        /*
         if game.player1.position < game.ball.1 {
             game.move_player(1, 0.25);
         } else if game.player1.position > game.ball.1 {
             game.move_player(1, -0.25);
         }
+        */
 
         if game.player2.position < game.ball.1 {
-            game.move_player(2, 0.25);
+            game.move_player(2, 0.15);
         } else if game.player2.position > game.ball.1 {
-            game.move_player(2, -0.25);
+            game.move_player(2, -0.15);
         }
     }
 
