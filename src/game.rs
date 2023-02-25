@@ -120,15 +120,21 @@ impl GameData {
             self.ball_direction.0 = -self.ball_direction.0;
         }
 
-        if by < 0.0 || by > (MAP_LIMIT.1 as f32) {
+        if by <= 0.0 || by >= (MAP_LIMIT.1 as f32) {
             self.ball_direction.1 = -self.ball_direction.1;
+        }
+
+        if by <= 0.0 {
+            self.ball.1 = 0.0;
+        } else if by >= (MAP_LIMIT.1 as f32) {
+            self.ball.1 = MAP_LIMIT.1 as f32;
         }
     }
 
     fn check_state(&mut self) {
         let (bx, _) = self.ball;
 
-        if bx <= 0.0 || bx >= (MAP_LIMIT.0 as f32) {
+        if bx < 0.0 || bx > (MAP_LIMIT.0 as f32) {
             self.state = GameState::Lost;
         }
     }

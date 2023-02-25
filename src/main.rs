@@ -17,7 +17,7 @@ fn main() -> Result<()> {
         game.update();
         game.print();
 
-        match catch_input(3)? {
+        match catch_input(16)? {
             KeyCode::Char('q') => {
                 game.state = GameState::Lost;
             }
@@ -27,13 +27,27 @@ fn main() -> Result<()> {
             KeyCode::Char('s') => {
                 game.move_player(1, 1.0);
             }
+            /*
             KeyCode::Up => {
                 game.move_player(2, -1.0);
             }
             KeyCode::Down => {
                 game.move_player(2, 1.0);
             }
+            */
             _ => {}
+        }
+
+        if game.player1.position < game.ball.1 {
+            game.move_player(1, 0.25);
+        } else if game.player1.position > game.ball.1 {
+            game.move_player(1, -0.25);
+        }
+
+        if game.player2.position < game.ball.1 {
+            game.move_player(2, 0.25);
+        } else if game.player2.position > game.ball.1 {
+            game.move_player(2, -0.25);
         }
     }
 
