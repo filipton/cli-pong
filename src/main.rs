@@ -2,8 +2,8 @@ use std::time::Duration;
 
 use anyhow::Result;
 use crossterm::event::KeyCode;
-use display::{catch_input, clear_console, CleanUp, move_zero};
-use game::GameData;
+use display::{catch_input, clear_console, move_zero, CleanUp};
+use game::{GameData, GameState};
 
 mod display;
 mod game;
@@ -12,12 +12,12 @@ fn main() -> Result<()> {
     let _clean_up = CleanUp::new()?;
     let mut game: GameData = GameData::new();
 
-    for i in 0..1000 {
+    while game.state == GameState::Playing {
         move_zero();
         game.update();
         game.print();
 
-        std::thread::sleep(Duration::from_millis(25));
+        std::thread::sleep(Duration::from_millis(16));
     }
 
     /*
