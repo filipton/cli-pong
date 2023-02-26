@@ -3,7 +3,7 @@ use std::{
     env,
     io::Error as IoError,
     net::SocketAddr,
-    ops::AddAssign,
+    ops::{AddAssign, SubAssign},
     sync::{Arc, Mutex},
 };
 
@@ -56,6 +56,13 @@ async fn handle_connection(
 
     let (tx, rx) = unbounded();
 
+    tx.unbounded_send(Message::Text(format!(
+        "{},{}",
+        "id",
+        *next_id.lock().unwrap()
+    )))
+    .unwrap();
+
     send_state(peer_map.clone(), tx.clone()).await;
     peer_map
         .lock()
@@ -74,7 +81,6 @@ async fn handle_connection(
             }
             _ => {}
         }
-        println!("Received a message from {}: {:?}", addr, msg_vec);
 
         let peers = peer_map.lock().unwrap();
         let broadcast_recipients = peers
@@ -101,6 +107,7 @@ async fn handle_connection(
 
     println!("{} disconnected", &addr);
     peer_map.lock().unwrap().remove(&addr);
+    next_id.lock().unwrap().sub_assign(1);
 }
 
 async fn send_state(peer_map: PeerMap, tx: Tx) {
