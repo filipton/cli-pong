@@ -70,18 +70,6 @@
         } else if (event.key === "s") {
             moveClientDelta(20);
         }
-
-        /*
-        if (event.key === "w") {
-            movePalletDelta(pallet1, -20);
-        } else if (event.key === "s") {
-            movePalletDelta(pallet1, 20);
-        } else if (event.key === "ArrowUp") {
-            movePalletDelta(pallet2, -20);
-        } else if (event.key === "ArrowDown") {
-            movePalletDelta(pallet2, 20);
-        }
-        */
     }
 
     function moveClientDelta(delta: number) {
@@ -97,7 +85,7 @@
             let y_ratio = 50 / window.innerHeight;
             let y = pallet2.offsetTop * y_ratio;
 
-            socket.send(`pallet_pos,${pallet2.offsetTop}`);
+            socket.send(`pallet_pos,${y}`);
         }
     }
 
