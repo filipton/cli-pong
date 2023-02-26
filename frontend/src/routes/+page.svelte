@@ -16,12 +16,22 @@
 
         socket.onopen = () => {
             console.log("Connected to socket");
+            getState();
         };
 
         socket.onclose = () => {
             console.log("Disconnected from socket");
         };
     });
+
+    function getState() {
+        if (socket.readyState != WebSocket.OPEN) {
+            return;
+        }
+
+        socket.send("get_state");
+        setTimeout(getState, 16);
+    }
 
     function processSocketMsg(event: MessageEvent) {
         let parts = event.data.split(",");
@@ -35,6 +45,22 @@
             } else if (pallet == "2") {
                 movePallet(pallet2, y);
             }
+        } else if (parts[0] == "ball_pos") {
+            let x = parseInt(parts[1]);
+            let y = parseInt(parts[2]);
+
+            let x_ratio = window.innerWidth / 100;
+            let y_ratio = window.innerHeight / 50;
+
+            x = x * x_ratio;
+            y = y * y_ratio;
+
+            moveBall(x, y);
+        } else if (parts[0] == "bot_pos") {
+            let y = parseInt(parts[1]);
+            let y_ratio = window.innerHeight / 50;
+            y = y * y_ratio;
+            movePallet(pallet2, y);
         }
     }
 
@@ -61,9 +87,16 @@
     function moveClientDelta(delta: number) {
         if (current_id == "1") {
             movePalletDelta(pallet1, delta);
-            socket.send(`pallet_pos,${pallet1.offsetTop}`);
+            let y_ratio = 50 / window.innerHeight;
+            let y = pallet1.offsetTop * y_ratio;
+
+            socket.send(`pallet_pos,${y}`);
         } else if (current_id == "2") {
             movePalletDelta(pallet2, delta);
+
+            let y_ratio = 50 / window.innerHeight;
+            let y = pallet2.offsetTop * y_ratio;
+
             socket.send(`pallet_pos,${pallet2.offsetTop}`);
         }
     }
@@ -88,12 +121,12 @@
 
     function moveBall(x: number = 0, y: number = 0) {
         let newTop = clamp(
-            x,
+            y,
             ball.clientHeight / 2,
             window.innerHeight - ball.clientHeight / 2
         );
         let newLeft = clamp(
-            y,
+            x,
             ball.clientWidth / 2,
             window.innerWidth - ball.clientWidth / 2
         );
@@ -103,8 +136,6 @@
 
     const clamp = (num: number, min: number, max: number) =>
         Math.min(Math.max(num, min), max);
-
-    const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 </script>
 
 <svelte:window on:keydown={handleKeyDown} />
